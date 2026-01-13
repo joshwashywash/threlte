@@ -63,18 +63,18 @@
   })
 
   $effect.pre(() => {
-    if (url === undefined || loader === undefined) {
-      return
-    }
+    if (url === undefined || loader === undefined) return
 
     const suspendedTexture = suspend(
-      cache.remember(() => {
-        return loader.loadAsync(url)
+      cache.remember(async () => {
+        return await loader.loadAsync(url).then((t) => {
+          t.mapping = EquirectangularReflectionMapping
+          return t
+        })
       }, [url])
     )
 
     suspendedTexture.then((t) => {
-      t.mapping = EquirectangularReflectionMapping
       texture = t
     })
 
